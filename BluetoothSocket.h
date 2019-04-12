@@ -1,6 +1,7 @@
 /*
  *   C++ bluetooth-sockets on Unix
- *   Copyright (C) 2019 Jan Zuurbier
+ *   Copyright (C) 2019 
+ *   Based on C++ sockets on Unix and Windows by Jeff Donahoo.
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
