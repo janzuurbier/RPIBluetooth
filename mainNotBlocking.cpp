@@ -1,8 +1,13 @@
 #include "BluetoothSocket.h"
 #include <unistd.h>
+#include <cstdlib>
 using namespace std;
 
 int main() {
+	//maak het device discoverable voor beperkte tijd.
+	//zodat het gevonden kan worden in een device-scan
+	system("sudo hciconfig hci0 piscan");
+	
 	BluetoothServerSocket serversock(2, 1);  //2 is het channel-number
 	cout << "listening" << endl;
 	while(true) {

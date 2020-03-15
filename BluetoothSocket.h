@@ -1,6 +1,6 @@
 /*
  *   C++ bluetooth-sockets on Unix
- *   Copyright (C) 2019 
+ *   Copyright (C) 2019
  *   Based on C++ sockets on Unix and Windows by Jeff Donahoo.
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -49,7 +49,7 @@ public:
    *   @param message explanatory message
    */
   BluetoothException(const std::string &message) throw();
-  
+
   /**
    *   Construct a BluetoothException with a explanatory message.
    *   @param message explanatory message
@@ -59,40 +59,46 @@ public:
 };
 
 
-/** 
-    Container aggregating an address and a port for a bluetooth-socket.
-    BluetoothAddress offers value semantics.
+/**
+  *  Container aggregating an address and a port for a bluetooth-socket.
+  *  BluetoothAddress offers value semantics.
+  *  @Author J. Zuurbier
 */
 class BluetoothAddress {
 public:
   /** Type of address being requested. */
-  enum AddressType { BLUETOOTH_SERVER, BLUETOOTH_SOCKET};
-  
-  /** Make a BluetoothAddress for the given host and channel. */
-  BluetoothAddress(const char *host, uint8_t channel, AddressType atype = BLUETOOTH_SOCKET ) throw(BluetoothException);
+  enum AddressType { BLUETOOTH_RFCOMM_SERVER, BLUETOOTH_RFCOMM_SOCKET};
 
-  
+  /** Constructor
+    * @param host bluetooth mac address or bluetooth name of the device
+    * @param channel channelnumber of the bluetoothservice
+    * @param atype type of bluetoothaddress
+    *
+    */
+  BluetoothAddress(const char *host, uint8_t channel, AddressType atype = BLUETOOTH_RFCOMM_SOCKET ) throw(BluetoothException);
+
+
 
   /** Make a BluetoothAddress that wraps a copy of the given sockaddr
-      structure of the given addreLenVal legth in bytes.  If used as a
+      structure of the given addreLenVal length in bytes.  If used as a
       default constructur, the BluetoothAddress is created in an
       uninitialized state, and none of its get methods should be used
       until it is initialized. */
   BluetoothAddress(sockaddr *addrVal = NULL, socklen_t addrLenVal = 0);
 
-  /** Return a string representation of the address portion of this
+  /** @return a string representation of the address portion of this
       object. */
   std::string getAddress() const throw(BluetoothException);
 
-  /** Return a numeric value for the port portion of this object. */
+  /** @return a numeric value for the port portion of this object. */
   uint8_t getChannel() const throw(BluetoothException);
 
-  /** Return a pointer to the sockaddr structure wrapped by this object. */
+  /** @return a pointer to the sockaddr structure wrapped by this object. */
   sockaddr *getSockaddr() const {
     return (sockaddr *)&addr;
   }
 
-  /** Return the length of the sockaddr structure wrapped by this object. */
+  /** @return the length of the sockaddr structure wrapped by this object. */
   socklen_t getSockaddrLen() const {
     return addrLen;
   }
@@ -106,6 +112,9 @@ private:
   socklen_t addrLen = 0;
 };
 
+/**
+  *  Baseclass for sockets
+*/
 class Socket {
 public:
   virtual ~Socket();
@@ -116,7 +125,7 @@ public:
    *   @exception BluetoothException thrown if fetch fails
    */
   BluetoothAddress getLocalAddress() throw(BluetoothException);
-  
+
   /** Close this socket. */
   void close();
 
@@ -212,18 +221,18 @@ public:
   ~BluetoothSocket();
 
   /**
-   *   Construct a TCP socket with a connection to the given foreign
-   *   address and port.  This is interface is provided as a convience
+   *   Construct a bluetoothsocket with a connection to the given foreign
+   *   address and channel.  This is interface is provided as a convience
    *   for typical applications that don't need to worry about the
-   *   local address and port.  
-   *   @param foreignAddress foreign address (IP address or name) 
-   *   @param foreignPort foreign port 
-   *   @exception BluetoothException thrown if unable to create TCP socket
+   *   local address and port.
+   *   @param foreignAddress foreign address (bluetoothaddress or name)
+   *   @param foreignPort foreign port
+   *   @exception BluetoothException thrown if unable to create bluetooth socket
    */
-  BluetoothSocket(const char *foreignAddress, uint8_t foreignChannel) 
+  BluetoothSocket(const char *foreignAddress, uint8_t foreignChannel)
     throw(BluetoothException);
 
-  
+
   /**
      Connect this socket to the given foreign address.
    */
@@ -237,7 +246,7 @@ public:
    *   to getStream.
    */
   std::iostream &getStream() ;
-  
+
   MessageBox& getMessageBox();
 
 private:
@@ -251,9 +260,9 @@ private:
 
   /** Streambuffer managed by myStream. */
   std::streambuf *myStreambuf;
-  
+
    /** messagebox associated with this socket, or NULL if it doesn't have
-      one. */  
+      one. */
   MessageBox* myMessageBox;
 };
 
@@ -272,18 +281,18 @@ public:
    *   on the specified port on any interface
    *   @param localChannel local port of server socket, a value of zero will
    *                   give a system-assigned unused port
-   *   @param queueLen maximum queue length for outstanding 
+   *   @param queueLen maximum queue length for outstanding
    *                   connection requests (default 5)
    *   @exception BluetoothException thrown if unable to create Bluetooth server socket
    */
-  BluetoothServerSocket(uint8_t localChannel, int queueLen = 5) 
+  BluetoothServerSocket(uint8_t localChannel, int queueLen = 5)
       throw(BluetoothException);
 
   /**
      Bind this socket to the given local address.
    */
   void bind(const BluetoothAddress &localAddress) throw(BluetoothException);
-  
+
   /**
    *   Blocks until a new connection is established on this socket or error
    *   @return new connection socket
@@ -296,7 +305,7 @@ private:
 };
 
 
-	
+
 
 
 
